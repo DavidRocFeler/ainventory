@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
-
+import { DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER } from "./envs";
 dotenv.config();
 
 import { User } from "../entities/User";
@@ -11,17 +11,14 @@ import { InventoryHistory } from "../entities/InventoryHistory";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || "5432"),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  synchronize: false,
+  host: DB_HOST,
+  port: DB_PORT,
+  username: DB_USER,
+  password: DB_PASSWORD,
+  database: DB_NAME,
+  synchronize: true,
   dropSchema: false,
   logging: false,
-  ssl: process.env.NODE_ENV === 'production' 
-    ? { rejectUnauthorized: false }  // ✅ Para Render
-    : false,                         // Para desarrollo local
   entities: [User, Credential, Product, UserInventory, InventoryHistory],
   subscribers: [],
   migrations: [],
