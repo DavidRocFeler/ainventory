@@ -16,10 +16,10 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER,       // ✅ macbook
   password: process.env.DB_PASSWORD,   // ✅ rdpalominop1997
   database: process.env.DB_NAME,       // ✅ ainventory
-  synchronize: true,
-  dropSchema: true,
+  synchronize: false,
+  dropSchema: false,
   logging: false,
-  ssl: false, // ✅ Sin SSL para DB local
+  ssl: true, // ✅ Sin SSL para DB local
   entities: [User, Credential, Product, UserInventory, InventoryHistory],
   subscribers: [],
   migrations: [],
