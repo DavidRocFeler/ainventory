@@ -2,7 +2,7 @@
 import type { Product } from '@/types/product';
 import { useAuthStore } from "@/stores/auth.store"; // ✅ Agrega esta importación
 
-const API_BASE_URL = 'http://localhost:3002';
+const API_BASE_URL = 'https://ainventory.onrender.com';
 
 // ✅ Cambia esta función para usar Zustand
 const getAuthToken = (): string | null => {
