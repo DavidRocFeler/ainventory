@@ -135,6 +135,16 @@ const productsToPreLoad: IProduct[] = [
     category: 'beer'
   },
   {
+    name: 'Ginger Beer',
+    currentStock: 0,
+    incoming: 0,
+    consumed: 0,
+    total: 0,
+    unit: 'bottles',
+    icon: 'GingerBeer.png',
+    category: 'spirits'
+  },
+  {
     name: 'Ginger Ale',
     currentStock: 0,
     incoming: 0,
@@ -202,6 +212,26 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Fristi.png',
+    category: 'wine'
+  },
+  {
+    name: 'Spritz',
+    currentStock: 0,
+    incoming: 0,
+    consumed: 0,
+    total: 0,
+    unit: 'bottles',
+    icon: '/Spritz.png',
+    category: 'wine'
+  },
+  {
+    name: 'Milk',
+    currentStock: 0,
+    incoming: 0,
+    consumed: 0,
+    total: 0,
+    unit: 'bottles',
+    icon: '/Milk.png',
     category: 'wine'
   },
   {
