@@ -1,16 +1,16 @@
+import { IInventoryHistoryItem } from "./inventory";
 
-export interface Product {
-  id: string;
-  name: string;
-  currentStock: number;
-  unit: string;
-  icon: string;
-  category: 'wine' | 'beer' | 'spirits' | 'coffee' | 'other';
+export interface IProductModalProps {
+  product: IInventoryHistoryItem;
+  onClose: () => void;
+  upDateProductProps?: IProductInventoryUpdate;
+  selectedDate: Date; // Ya está definido
+  refreshData: (date: Date) => Promise<void>; 
 }
 
-export interface DailyConsumption {
-  date: string;
-  consumed: number;
-  inStock: number;
-  total: number;
+export interface IProductInventoryUpdate {
+  instock?: number;    // Opcional (Partial)
+  incoming?: number;   // Opcional (Partial)
+  total?: number;      // Opcional (Partial)
+  updated_at: string;  // Obligatorio (ISO string)
 }

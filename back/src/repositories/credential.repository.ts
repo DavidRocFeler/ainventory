@@ -1,4 +1,4 @@
 import { AppDataSource } from "../config/dataSource";
-import { Credential } from "../entities/Credential";
+import { CredentialEntity } from "../entities/CredentialEntity";
 
-export const CredentialRepository = AppDataSource.getRepository(Credential);
+export const CredentialRepository = AppDataSource.getRepository(CredentialEntity);

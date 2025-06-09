@@ -1,8 +1,10 @@
 import React from 'react';
-import type { Product } from '@/types/product';
+import { useState, useEffect } from 'react';
+import { IInventoryHistoryItem } from '@/types/inventory';
+import { format } from 'date-fns';
 
 interface ProductCardProps {
-  product: Product;
+  product: IInventoryHistoryItem;
   inventoryItem?: {  // ✅ Agregar datos del inventario
     currentStock: number;
     incoming: number;
@@ -10,11 +12,12 @@ interface ProductCardProps {
     total: number;
   };
   onClick: () => void;
+  selectedDate: Date;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, inventoryItem, onClick }) => {
-  // Usar total del inventoryItem si existe, si no usar currentStock del product
-  const displayValue = inventoryItem?.total ?? product.currentStock;
+export const ProductCard: React.FC<ProductCardProps> = ({ product, inventoryItem, onClick, selectedDate }) => {
+
+  const displayValue = inventoryItem?.total ?? product.total;
   
   const getStockColor = (stock: number) => {
     if (stock <= 5) return 'text-red-600';
@@ -28,7 +31,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, inventoryItem
       className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 cursor-pointer hover:shadow-md hover:scale-[102%] md:hover:scale-105 transition-all duration-200"
     >
       <div className="flex items-start justify-between mb-4">
-        <img src={product.icon}/>
+        <img src={product.icon} alt={product.name} />
         <span className={`text-lg font-semibold ${getStockColor(displayValue)}`}>
           {displayValue}
         </span>
@@ -38,9 +41,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, inventoryItem
         {product.name}
       </h3>
       
-      <p className="text-gray-600 text-sm">
+      <div className="text-gray-600 text-sm flex flex-row">
         {displayValue} {product.unit} left
-      </p>
+
+        <p className='ml-auto'>
+          {format(selectedDate, "MMMM d, yyyy")}
+        </p>
+      </div>
     </div>
   );
 };

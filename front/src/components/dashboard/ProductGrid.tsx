@@ -1,31 +1,32 @@
 import React from 'react';
 import { ProductCard } from './ProductCard';
-import type { Product } from '@/types/product';
+import { IInventoryHistoryItem } from '@/types/inventory';
 
 interface ProductGridProps {
-  products: Product[];
+  products: IInventoryHistoryItem[];
   inventoryData?: Record<string, {  // ✅ Agregar mapa de datos de inventario
     currentStock: number;
     incoming: number;
     consumed: number;
     total: number;
   }>;
-  onProductClick: (product: Product) => void;
+  onProductClick: (product: IInventoryHistoryItem) => void;
+  selectedDate: Date; 
 }
 
 export const ProductGrid: React.FC<ProductGridProps> = ({ 
   products, 
-  inventoryData,  // ✅ Recibir inventoryData
-  onProductClick 
+  selectedDate,
+  onProductClick
 }) => {
   return (
-    <div className="mt-20">
+    <div className="">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map((product) => (
           <ProductCard
-            key={product.id}
+            key={product.item_id}
             product={product}
-            inventoryItem={inventoryData?.[product.id]}  // ✅ Pasar el inventoryItem correspondiente
+            selectedDate={selectedDate} 
             onClick={() => onProductClick(product)}
           />
         ))}

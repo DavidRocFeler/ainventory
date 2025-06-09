@@ -1,6 +1,6 @@
 import LoginUserDto from "../dtos/loginUser.dto";
 import RegisterUserDto from "../dtos/registerUser.dto";
-import { User } from "../entities/User";
+import { UserEntity } from "../entities/UserEntity";
 import { UserRepository } from "../repositories/user.repository";
 import { ClientError } from "../utils/errors";
 import {
@@ -17,7 +17,7 @@ export const checkUserExists = async (email: string): Promise<boolean> => {
 
 export const registerUserService = async (
   registerUserDto: RegisterUserDto
-): Promise<User> => {
+): Promise<UserEntity> => {
   const user = await UserRepository.create(registerUserDto);
   await UserRepository.save(user);
   const credential = await createCredentialService({
@@ -30,18 +30,18 @@ export const registerUserService = async (
 
 export const loginUserService = async (
   loginUserDto: LoginUserDto
-): Promise<{ token: string; user: User }> => {
-  console.log("🔍 Email recibido:", loginUserDto.email);
-  console.log("🔍 Password recibido:", loginUserDto.password);
+): Promise<{ token: string; user: UserEntity }> => {
+  // console.log("🔍 Email recibido:", loginUserDto.email);
+  // console.log("🔍 Password recibido:", loginUserDto.password);
   
-  const user: User | null = await UserRepository.findOne({
+  const user: UserEntity | null = await UserRepository.findOne({
     where: {
       email: loginUserDto.email,
     },
     relations: ["credential"],
     select: {
       id: true,
-      name: true,
+      username: true,
       email: true,
       address: true,
       phone: true,
@@ -53,16 +53,16 @@ export const loginUserService = async (
     }
   });
   
-  console.log("🔍 Usuario encontrado:", !!user);
-  console.log("🔍 Credencial existe:", !!user?.credential);
-  console.log("🔍 Password hash existe:", !!user?.credential?.password);
+  // console.log("🔍 Usuario encontrado:", !!user);
+  // console.log("🔍 Credencial existe:", !!user?.credential);
+  // console.log("🔍 Password hash existe:", !!user?.credential?.password);
   
   if (!user) throw new Error("User not found");
   if (!user.credential) throw new Error("Credential not found");
   if (!user.credential.password) throw new Error("Password hash not found");
   
   const isPasswordValid = await checkPasswordService(loginUserDto.password, user.credential.password);
-  console.log("🔍 ¿Password válido?:", isPasswordValid);
+  // console.log("🔍 ¿Password válido?:", isPasswordValid);
   
   if (isPasswordValid) {
     const token = jwt.sign({ userId: user.id }, JWT_SECRET);
@@ -71,7 +71,7 @@ export const loginUserService = async (
     const { credential, ...userWithoutCredential } = user;
     
     return { 
-      user: userWithoutCredential as User, 
+      user: userWithoutCredential as UserEntity, 
       token 
     };
   } else {

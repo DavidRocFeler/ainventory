@@ -5,14 +5,14 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { Product } from '@/types/product';
+import { IInventoryHistoryItem } from '@/types/inventory';
 import { LogoutButton } from '../LoggoutButton';
 import { useNavigate } from 'react-router-dom'; // ✅ Agregar
 
 interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (product: Omit<Product, 'id'>) => void;
+  onAdd: (product: Omit<IInventoryHistoryItem, 'id'>) => void;
 }
 
 const categoryIcons = {
