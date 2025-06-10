@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog } from '@radix-ui/react-dialog';
+import { Dialog, DialogTitle } from '@radix-ui/react-dialog';
 import { DialogContent } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Edit3, X } from 'lucide-react';
 import { Input } from '../ui/input';
 import { IProductInventoryUpdate, IProductModalProps } from '@/types/product';
 import { format } from 'date-fns';
-import { updateProduct } from '@/server/product.api';
+import { getInventoryHistory, updateProduct } from '@/server/product.api';
 import { isSameDay } from 'date-fns';
+import { IInventoryHistoryItem } from '@/types/inventory';
 
 const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedDate, refreshData}) => { 
   const [loading, setLoading] = useState(false);
@@ -16,22 +17,46 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
   const [isEditingTotal, setIsEditingTotal] = useState(false);
   
   // Estados para los valores temporales de edición
-  const [tempInstock, setTempInstock] = useState(product.instock?.toString() || '0');
-  const [tempIncoming, setTempIncoming] = useState(product.incoming?.toString() || '0');
-  const [tempTotal, setTempTotal] = useState(product.total?.toString() || '0');
+  const [tempInstock, setTempInstock] = useState('0');
+  const [tempIncoming, setTempIncoming] = useState('0');
+  const [tempTotal, setTempTotal] = useState('0');
 
-  const [currentProduct, setCurrentProduct] = useState(product);
+  // Estado para almacenar los datos del historial
+  const [historyData, setHistoryData] = useState<IInventoryHistoryItem | null>(null);
 
   const isCurrentDate = (selectedDate: Date) => {
     return isSameDay(selectedDate, new Date());
   };
 
   useEffect(() => {
-    setCurrentProduct(product);
-    setTempInstock(product.instock?.toString() || '0');
-    setTempIncoming(product.incoming?.toString() || '0');
-    setTempTotal(product.total?.toString() || '0');
-  }, [product]);
+    const loadHistoryData = async () => {
+      try {
+        const data = await getInventoryHistory(selectedDate);
+        const productHistory = data.find(item => item.product_id === product.product_id);
+        setHistoryData(productHistory || null);
+        
+        // Inicializa los valores temporales con los datos del historial
+        if (productHistory) {
+          setTempInstock(productHistory.instock?.toString() || '0');
+          setTempIncoming(productHistory.incoming?.toString() || '0');
+          setTempTotal(productHistory.total?.toString() || '0');
+        } else {
+          // Si no hay datos históricos, usar valores por defecto
+          setTempInstock('0');
+          setTempIncoming('0');
+          setTempTotal('0');
+        }
+      } catch (error) {
+        console.error('Error loading history:', error);
+        // En caso de error, usar valores por defecto
+        setTempInstock('0');
+        setTempIncoming('0');
+        setTempTotal('0');
+      }
+    };
+  
+    loadHistoryData();
+  }, [selectedDate, product.product_id]);
 
   const validateTotal = (totalValue: string, instock: number, incoming: number): boolean => {
     const total = parseInt(totalValue) || 0;
@@ -63,7 +88,9 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
     try {
       // Validación para total
       if (field === 'total') {
-        const isValidTotal = validateTotal(value, product.instock || 0, product.incoming || 0);
+        const currentInstock = historyData?.instock || 0;
+        const currentIncoming = historyData?.incoming || 0;
+        const isValidTotal = validateTotal(value, currentInstock, currentIncoming);
         if (!isValidTotal) {
           alert("Cannot enter a value greater than Incoming + Instock");
           return;
@@ -80,22 +107,7 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
       }
 
       setLoading(true);
-      
-      const updateDataProduct: Partial<IProductInventoryUpdate> = {
-        updated_at: selectedDate.toISOString(),
-      };
-      
-      if (field === 'instock') {
-        updateDataProduct.instock = parseInt(value) || 0;
-      } else if (field === 'incoming') {
-        updateDataProduct.incoming = parseInt(value) || 0;
-      } else if (field === 'total') {
-        updateDataProduct.total = parseInt(value) || 0;
-      }
 
-      setLoading(true);
-    
-      // Versión corregida - declaración única de updateData
       const updateData: IProductInventoryUpdate = {
         updated_at: selectedDate.toISOString(),
         [field]: parseInt(value) || 0
@@ -103,12 +115,19 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
 
       await updateProduct(product.product_id, updateData);
       
-      // Actualización optimista
-      setCurrentProduct(prev => ({
+      // Actualización optimista del historyData
+      setHistoryData(prev => ({
         ...prev,
-        instock: field === 'instock' ? parseInt(value) || 0 : prev.instock,
-        incoming: field === 'incoming' ? parseInt(value) || 0 : prev.incoming,
-        total: field === 'total' ? parseInt(value) || 0 : prev.total
+        product_id: product.product_id,
+        updated_at: selectedDate.toISOString(),
+        instock: field === 'instock' ? parseInt(value) || 0 : prev?.instock || 0,
+        incoming: field === 'incoming' ? parseInt(value) || 0 : prev?.incoming || 0,
+        total: field === 'total' ? parseInt(value) || 0 : prev?.total || 0,
+        // Mantener otros campos si existen
+        consumed: prev?.consumed || 0,
+        name: prev?.name || '',
+        icon: prev?.icon || '',
+        unit: prev?.unit || ''
       }));
       
       // Refrescar datos en segundo plano
@@ -119,10 +138,8 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
       setIsEditingIncoming(false);
       setIsEditingTotal(false);
       
-      onClose();
-
     } catch (error) {
-      // console.error('Error updating product:', error);
+      console.error('Error updating product:', error);
       alert('Error updating product');
     } finally {
       setLoading(false);
@@ -131,13 +148,13 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
 
   const handleCancelEdit = (field: 'instock' | 'incoming' | 'total') => {
     if (field === 'instock') {
-      setTempInstock(product.instock?.toString() || '0');
+      setTempInstock(historyData?.instock?.toString() || '0');
       setIsEditingStock(false);
     } else if (field === 'incoming') {
-      setTempIncoming(product.incoming?.toString() || '0');
+      setTempIncoming(historyData?.incoming?.toString() || '0');
       setIsEditingIncoming(false);
     } else if (field === 'total') {
-      setTempTotal(product.total?.toString() || '0');
+      setTempTotal(historyData?.total?.toString() || '0');
       setIsEditingTotal(false);
     }
   };
@@ -146,6 +163,9 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="w-[90%] h-[30rem] overflow-x-hidden">
+        <DialogTitle className='sr-only'>
+          Products
+        </DialogTitle> 
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center gap-3">
             <img src={product.icon} alt={product.name} />
@@ -176,10 +196,10 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b border-gray-100 ">
+                    <tr className="border-b border-gray-100">
 
                       {/* IN STOCK COLUMN */}
-                      <td className="px-4 py-4 flex justify-center">
+                      <td className="px-4 py-4">
                         <div>
                           {isEditingStock ? (
                             <div className='w-fit'>
@@ -221,7 +241,7 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
                           ) : (
                             <div className='flex flex-col justify-center mt-[0.4rem]'>
                               <div className='flex justify-center items-center'>
-                                <p>{currentProduct.instock}</p>
+                                <p>{historyData?.instock || 0}</p>
                                 <Button
                                   size="sm"
                                   variant="ghost"
@@ -237,7 +257,7 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
                       </td>
 
                       {/* INCOMING COLUMN */}
-                      <td className="py-4 px-4">
+                      <td className="py-4 px-4 ">
                         <div>
                           {isEditingIncoming ? (
                             <div className='w-fit mx-auto'>
@@ -278,7 +298,7 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
                           ) : (
                             <div className='flex flex-col justify-center mt-[0.4rem]'>
                               <div className='flex justify-center items-center'>
-                                <p>{currentProduct.incoming}</p>
+                                <p>{historyData?.incoming || 0}</p>
                                 <Button
                                   size="sm"
                                   variant="ghost"
@@ -294,10 +314,10 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
                       </td>
 
                       {/* CONSUMED COLUMN (Read-only) */}
-                      <td className="py-4 px-4 flex justify-center">
-                        <div className='flex'>
-                          <p>{product.consumed}</p>
-                          <span className="text-gray-600 ml-1">{product.unit}</span>
+                      <td className="py-4 px-4">
+                        <div className='flex pt-[0.35rem]'>
+                          <p>{historyData?.consumed || 0}</p>
+                          <span className="text-gray-600 ml-1">{historyData?.unit || ''}</span>
                         </div>
                       </td>
 
@@ -342,7 +362,7 @@ const ProductModal: React.FC<IProductModalProps> = ({product, onClose, selectedD
                           ) : (
                             <div className='flex flex-col justify-center mt-[0.4rem]'>
                               <div className='flex justify-center items-center'>
-                                <p>{currentProduct.total}</p>
+                                <p>{historyData?.total || 0}</p>
                                 <Button
                                   size="sm"
                                   variant="ghost"

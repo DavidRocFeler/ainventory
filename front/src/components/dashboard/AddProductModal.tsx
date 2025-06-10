@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { IInventoryHistoryItem } from '@/types/inventory';
 import { LogoutButton } from '../LoggoutButton';
 import { useNavigate } from 'react-router-dom'; // ✅ Agregar
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -57,7 +58,9 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-md">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Add New Product</h2>
+          <DialogTitle asChild> 
+            <h2 className="text-2xl font-bold text-gray-900">Add New Product</h2>
+          </DialogTitle>
           <Button variant="ghost" size="sm" onClick={handleClose}>
             <X size={20} />
           </Button>
