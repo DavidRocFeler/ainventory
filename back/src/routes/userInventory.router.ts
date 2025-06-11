@@ -20,6 +20,6 @@ router.use(checkLogin);
 // router.get("/item/:itemId", getInventoryItemDetailsController);
 
 // Actualizar un ítem (ej: stock)
-router.put("/product/:productId", updateItemController);
+router.patch("/product/:productId", updateItemController);
 
 export default router;

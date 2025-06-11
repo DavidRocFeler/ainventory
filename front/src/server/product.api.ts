@@ -34,7 +34,7 @@ export const updateProduct = async (
   // console.log('5. Body to send:', JSON.stringify(productData));
   
   const response = await fetch(`${API_URL}/user-inventory/product/${productId}`, {
-    method: 'PUT',
+    method: 'PATCH',
     headers: getAuthHeaders(),
     body: JSON.stringify(productData),
   });
