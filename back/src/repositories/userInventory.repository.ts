@@ -59,13 +59,13 @@ export class InventoryRepository {
       
       console.log(`🗑️ Eliminando registros futuros para item ${item.item_id} desde ${futureDate}`);
       
-      await manager
-        .getRepository(InventoryHistoryEntity)
-        .createQueryBuilder()
-        .delete()
-        .where("item_id = :itemId", { itemId: item.item_id })
-        .andWhere("record_date >= :futureDate", { futureDate })
-        .execute();
+      // await manager
+      //   .getRepository(InventoryHistoryEntity)
+      //   .createQueryBuilder()
+      //   .delete()
+      //   .where("item_id = :itemId", { itemId: item.item_id })
+      //   .andWhere("record_date >= :futureDate", { futureDate })
+      //   .execute();
       
       console.log(`✅ Registros futuros eliminados para item ${item.item_id}`);
     });
