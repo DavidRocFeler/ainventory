@@ -21,6 +21,7 @@ export const LoginView = () => {
     login(data);
   };
 
+  //add new deploy
   return (
     <div className="bg-[#E7E1BC] min-h-screen flex items-center justify-center">
       <div className="max-w-md w-[90%] mmd:w-full space-y-8 p-8 bg-white rounded-lg shadow">
