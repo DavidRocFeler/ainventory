@@ -16,10 +16,28 @@ export const authApi = {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || "Error to login");
+      throw new Error(error.message || "Error al iniciar sesión");
     }
 
     return response.json();
   },
 
+  getProtectedData: async (): Promise<any> => {
+    const token = useAuthStore.getState().token;
+    
+    const response = await fetch(`${API_URL}/protected-route`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener datos protegidos");
+    }
+
+    return response.json();
+  },
 };

@@ -1,5 +1,5 @@
 import { AppDataSource } from "../config/dataSource";
-import { ProductEntity } from "../entities/ProductEntity";
+import { Product } from "../entities/Product";
 import { ProductRepository } from "../repositories/product.repository";
 
 export interface IProduct {
@@ -10,7 +10,7 @@ export interface IProduct {
   total: number;
   unit: string;
   icon: string;
-  category: 'wine' | 'beer' | 'liqueur' | 'soda' | 'water' | 'drinks-o' | 'drinks' | 'others';
+  category: 'wine' | 'beer' | 'spirits' | 'coffee' | 'other';
 }
 
 const productsToPreLoad: IProduct[] = [
@@ -22,7 +22,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/MAX.png',
-    category: 'soda'
+    category: 'wine'
   },
   {
     name: 'Pepsi', 
@@ -32,7 +32,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Pepsi.png',
-    category: 'soda'
+    category: 'beer'
   },
   {
     name: 'Ice tea',
@@ -42,7 +42,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/IceTea.png',
-    category: 'drinks-o'
+    category: 'spirits'
   },
   {
     name: 'Ice tea green',
@@ -52,7 +52,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/IceTeaGreen.png',
-    category: 'drinks-o'
+    category: 'wine'
   },
   {
     name: 'Birra moretti 0.0',
@@ -60,9 +60,9 @@ const productsToPreLoad: IProduct[] = [
     incoming: 0,
     consumed: 0,
     total: 0,
-    unit: 'bottles',
+    unit: 'kg',
     icon: '/BirraMoreti.png',
-    category: 'beer'
+    category: 'coffee'
   },
   {
     name: 'Amstel Rose 4.0',
@@ -72,7 +72,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/AmstelRose.png',
-    category: 'beer'
+    category: 'spirits'
   },
   {
     name: 'Brand Weizen 0.0',
@@ -92,7 +92,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/AquaPanna.png',
-    category: 'water'
+    category: 'spirits'
   },
   {
     name: 'San Pellegrino',
@@ -102,7 +102,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: 'SanPellegrino.png',
-    category: 'water'
+    category: 'wine'
   },
   {
     name: 'Bitter lemon',
@@ -112,7 +112,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: 'BitterLemon.png',
-    category: 'drinks-o'
+    category: 'spirits'
   },
   {
     name: 'Aqua tonic',
@@ -122,7 +122,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/TonicRoyalClub.png',
-    category: 'water'
+    category: 'wine'
   },
   {
     name: 'Appelsap',
@@ -132,7 +132,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: 'AppelSap.png',
-    category: 'drinks-o'
+    category: 'beer'
   },
   {
     name: 'Ginger Beer',
@@ -142,7 +142,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: 'GingerBeer.png',
-    category: 'soda'
+    category: 'spirits'
   },
   {
     name: 'Ginger Ale',
@@ -152,7 +152,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/GingerAle.png',
-    category: 'soda'
+    category: 'spirits'
   },
   {
     name: '7up',
@@ -160,9 +160,9 @@ const productsToPreLoad: IProduct[] = [
     incoming: 0,
     consumed: 0,
     total: 0,
-    unit: 'bottles',
+    unit: 'kg',
     icon: '/7up.png',
-    category: 'soda'
+    category: 'coffee'
   },
   {
     name: 'Sisi',
@@ -172,7 +172,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Sisi.png',
-    category: 'soda'
+    category: 'wine'
   },
   {
     name: 'Rivella',
@@ -182,7 +182,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Rivella.png',
-    category: 'drinks-o'
+    category: 'wine'
   },
   {
     name: 'Cassis',
@@ -192,7 +192,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Cassis.png',
-    category: 'soda'
+    category: 'wine'
   },
   {
     name: 'Chocomelk',
@@ -202,7 +202,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Chocomelk.png',
-    category: 'drinks-o'
+    category: 'wine'
   },
   {
     name: 'Fristi',
@@ -212,7 +212,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Fristi.png',
-    category: 'drinks-o'
+    category: 'wine'
   },
   {
     name: 'Spritz',
@@ -222,7 +222,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Spritz.png',
-    category: 'drinks'
+    category: 'wine'
   },
   {
     name: 'Milk',
@@ -232,7 +232,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Milk.png',
-    category: 'others'
+    category: 'wine'
   },
   {
     name: 'Affligem Tripel',
@@ -242,7 +242,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Tripel.png',
-    category: 'beer'
+    category: 'spirits'
   },
   {
     name: 'Affligem blond',
@@ -250,9 +250,9 @@ const productsToPreLoad: IProduct[] = [
     incoming: 0,
     consumed: 0,
     total: 0,
-    unit: 'bottles',
+    unit: 'kg',
     icon: '/Blond.png',
-    category: 'beer'
+    category: 'coffee'
   },
   {
     name: 'Heineken 0.0',
@@ -262,7 +262,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Heniken.png',
-    category: 'beer'
+    category: 'wine'
   },
   {
     name: 'Amstel 2.0',
@@ -272,7 +272,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Amstel20.png',
-    category: 'beer'
+    category: 'wine'
   },
   {
     name: 'Amstel 0.0',
@@ -282,7 +282,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/Amstel0.png',
-    category: 'beer'
+    category: 'wine'
   },
   {
     name: 'Ichnusa non filtrata',
@@ -292,7 +292,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/IchnnusaNonFiltrata.png',
-    category: 'beer'
+    category: 'wine'
   },
   {
     name: 'Ichnusa anima sarda',
@@ -302,7 +302,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/IchnnusaAnimaSarda.png',
-    category: 'beer'
+    category: 'wine'
   },
   {
     name: 'Aqua panna 0.75ml',
@@ -312,7 +312,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/AquaPanna075.png',
-    category: 'water'
+    category: 'wine'
   },
   {
     name: 'Sanpellegrino 0.75ml',
@@ -322,7 +322,7 @@ const productsToPreLoad: IProduct[] = [
     total: 0,
     unit: 'bottles',
     icon: '/SanPellegrino075.png',
-    category: 'water'
+    category: 'wine'
   },
   {
     name: 'Pinot grigio',
@@ -340,16 +340,16 @@ const productsToPreLoad: IProduct[] = [
     consumed: 0,
     total: 0,    unit: 'bottles',
     icon: '/Rose.png',
-    category: 'wine'
+    category: 'spirits'
   },
   {
     name: 'Proseco',
     currentStock: 0,
     incoming: 0,
     consumed: 0,
-    total: 0,    unit: 'bottles',
+    total: 0,    unit: 'kg',
     icon: '/Proseco.png',
-    category: 'wine'
+    category: 'coffee'
   },
   {
     name: 'RocketShoot',
@@ -358,7 +358,7 @@ const productsToPreLoad: IProduct[] = [
     consumed: 0,
     total: 0,    unit: 'bottles',
     icon: '/RocketShoot.png',
-    category: 'drinks'
+    category: 'wine'
   },
   {
     name: 'Ketel 1',
@@ -367,7 +367,7 @@ const productsToPreLoad: IProduct[] = [
     consumed: 0,
     total: 0,    unit: 'bottles',
     icon: '/Ketel1.png',
-    category: 'liqueur'
+    category: 'wine'
   },
   {
     name: 'Monica Rosso',
@@ -439,7 +439,7 @@ const productsToPreLoad: IProduct[] = [
     consumed: 0,
     total: 0,    unit: 'bottles',
     icon: '/Limoncello.png',
-    category: 'liqueur'
+    category: 'wine'
   },
   {
     name: 'Vermentino',
@@ -484,7 +484,7 @@ const productsToPreLoad: IProduct[] = [
     consumed: 0,
     total: 0,    unit: 'bottles',
     icon: '/jameson.png',
-    category: 'liqueur'
+    category: 'wine'
   },
   {
     name: 'Jack daniels',
@@ -493,7 +493,7 @@ const productsToPreLoad: IProduct[] = [
     consumed: 0,
     total: 0,    unit: 'bottles',
     icon: '/JackDaniels.png',
-    category: 'liqueur'
+    category: 'wine'
   },
   {
     name: 'Bacardi',
@@ -502,7 +502,7 @@ const productsToPreLoad: IProduct[] = [
     consumed: 0,
     total: 0,    unit: 'bottles',
     icon: '/bacardi.png',
-    category: 'liqueur'
+    category: 'wine'
   },
   {
     name: 'Gin',
@@ -511,7 +511,7 @@ const productsToPreLoad: IProduct[] = [
     consumed: 0,
     total: 0,    unit: 'bottles',
     icon: '/Gin.png',
-    category: 'liqueur'
+    category: 'wine'
   },
   {
     name: 'Expresso',
@@ -520,7 +520,7 @@ const productsToPreLoad: IProduct[] = [
     consumed: 0,
     total: 0,    unit: 'bottles',
     icon: 'ExpressoMartini.png',
-    category: 'drinks'
+    category: 'wine'
   },
   {
     name: 'Amaretto',
@@ -529,7 +529,7 @@ const productsToPreLoad: IProduct[] = [
     consumed: 0,
     total: 0,    unit: 'bottles',
     icon: '/Amaretto.png',
-    category: 'liqueur'
+    category: 'wine'
   },
   {
     name: 'Liquor 45',
@@ -538,7 +538,7 @@ const productsToPreLoad: IProduct[] = [
     consumed: 0,
     total: 0,    unit: 'bottles',
     icon: '/Liquor45.png',
-    category: 'liqueur'
+    category: 'wine'
   },
 ];
 
@@ -548,7 +548,7 @@ export const preLoadProducts = async () => {
   if (!products.length)
     await AppDataSource.createQueryBuilder()
       .insert()
-      .into(ProductEntity)
+      .into(Product)
       .values(productsToPreLoad)
       .execute();
   console.log("Products preloaded");

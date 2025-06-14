@@ -3,7 +3,6 @@ import usersRouter from "./users.router";
 import productsRouter from "./products.router";
 import userInventoryRouter from "./userInventory.router";
 import inventoryHistoryRouter from "./inventoryHistory.router";
-// import inventoryItemsRouter from "./inventoryItems.router";
 
 const router = Router();
 
@@ -15,7 +14,6 @@ router.use((req, res, next) => {
 router.use("/users", usersRouter);
 router.use("/products", productsRouter);
 router.use("/user-inventory", userInventoryRouter);
-// router.use("/inventory-items", inventoryItemsRouter);
 router.use("/inventory-history", inventoryHistoryRouter);
 
 export default router;

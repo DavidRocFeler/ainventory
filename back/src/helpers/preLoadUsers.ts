@@ -1,9 +1,9 @@
 // src/helpers/preLoadUsers.ts
-import { UserEntity } from "../entities/UserEntity";
-import { CredentialEntity } from "../entities/CredentialEntity";
+import { User } from "../entities/User";
+import { Credential } from "../entities/Credential";
 import { AppDataSource } from "../config/dataSource";
 import bcrypt from "bcrypt";
-import { Role } from "../entities/UserEntity"; // Importa el enum Role desde tu entidad
+import { Role } from "../entities/User"; // Importa el enum Role desde tu entidad
 
 interface IPreLoadUser {
     name: string;
@@ -17,7 +17,7 @@ interface IPreLoadUser {
 const usersToPreLoad: IPreLoadUser[] = [
     {
         name: "Usuario de Prueba",
-        email: "test@gmail.com",
+        email: "test@example.com",
         address: "Calle Falsa 123",
         phone: "1234567890",
         role: Role.USER,
@@ -29,13 +29,13 @@ const usersToPreLoad: IPreLoadUser[] = [
         address: "Epe",
         phone: "0987654321",
         role: Role.ADMIN,
-        password: "CasaSarda123!"
+        password: "Admin123!"
     }
 ];
 
 export const preLoadUsers = async () => {
-    const userRepository = AppDataSource.getRepository(UserEntity);
-    const credentialRepository = AppDataSource.getRepository(CredentialEntity);
+    const userRepository = AppDataSource.getRepository(User);
+    const credentialRepository = AppDataSource.getRepository(Credential);
     
     const existingUsers = await userRepository.find({ relations: ["credential"] });
     
@@ -54,7 +54,7 @@ export const preLoadUsers = async () => {
             
             // Crear el usuario con la credencial
             const user = userRepository.create({
-                username: userData.name,
+                name: userData.name,
                 email: userData.email,
                 address: userData.address,
                 phone: userData.phone,

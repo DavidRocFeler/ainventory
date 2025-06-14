@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import emailjs from 'emailjs-com';
-import { DialogTitle } from '@radix-ui/react-dialog';
 
 interface MessageModalProps {
   isOpen: boolean;
@@ -65,9 +64,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose }) =
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md bg-white">
         <div className="flex justify-between items-center mb-6">
-          <DialogTitle asChild className="text-2xl font-bold text-gray-900 mb-6">  {/* 👈 Envuelve tu h2 existente */}
-            Send Message
-          </DialogTitle>
+          <h2 className="text-2xl font-bold text-gray-900">Send Message</h2>
           <Button variant="ghost" size="sm" onClick={onClose}>
             <X size={20} />
           </Button>

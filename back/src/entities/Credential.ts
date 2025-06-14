@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { IsNotEmpty, Length, Matches } from "class-validator";
 
 @Entity({ name: "credentials" })
-export class CredentialEntity {
+export class Credential {
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -43,8 +43,8 @@ export const useLogout = () => {
     logoutStore();
     navigate("/");
     toast({
-      title: "Closed session",
-      description: "You have successfully logged out",
+      title: "Sesión cerrada",
+      description: "Has cerrado sesión correctamente",
     });
   };
 };

@@ -5,15 +5,14 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { IInventoryHistoryItem } from '@/types/inventory';
+import type { Product } from '@/types/product';
 import { LogoutButton } from '../LoggoutButton';
 import { useNavigate } from 'react-router-dom'; // ✅ Agregar
-import { DialogTitle } from '@radix-ui/react-dialog';
 
 interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (product: Omit<IInventoryHistoryItem, 'id'>) => void;
+  onAdd: (product: Omit<Product, 'id'>) => void;
 }
 
 const categoryIcons = {
@@ -58,9 +57,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-md">
         <div className="flex justify-between items-center mb-6">
-          <DialogTitle asChild> 
-            <h2 className="text-2xl font-bold text-gray-900">Add New Product</h2>
-          </DialogTitle>
+          <h2 className="text-2xl font-bold text-gray-900">Add New Product</h2>
           <Button variant="ghost" size="sm" onClick={handleClose}>
             <X size={20} />
           </Button>

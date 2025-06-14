@@ -1,22 +1,23 @@
 import { Router } from "express";
 import {
-  getItemHistoryController,
-  createSnapshotController,
-  getFullUserHistoryController
+  getInventoryHistoryByDate,
+  getInventoryHistoryLast30Days,
+  createDailySnapshot
 } from "../controllers/inventoryHistory.controller";
 import checkLogin from "../middlewares/checkLogin.middleware";
 
 const router = Router();
+
+// Todas las rutas requieren autenticación
 router.use(checkLogin);
 
-// Historial por rango de fechas (ej: ?start=2024-01-01&end=2024-01-31)
-// Historial de inventario por rango de fechas
-router.get("/inventory", getFullUserHistoryController); 
+// Obtener historial por fecha específica
+router.get("/by-date", getInventoryHistoryByDate);
 
-// Historial de un ítem específico (nuevo endpoint)
-router.get("/item/:itemId", getItemHistoryController);
+// Obtener historial de los últimos 30 días
+router.get("/last-30-days", getInventoryHistoryLast30Days);
 
-// Crear snapshot (para testing o procesos automatizados)
-router.post("/snapshot", createSnapshotController);
+// Crear snapshot manual (principalmente para testing)
+router.post("/create-snapshot", createDailySnapshot);
 
 export default router;

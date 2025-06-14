@@ -21,10 +21,9 @@ export const LoginView = () => {
     login(data);
   };
 
-  //add new deploy
   return (
-    <div className="bg-[#E7E1BC] min-h-screen flex items-center justify-center">
-      <div className="max-w-md w-[90%] mmd:w-full space-y-8 p-8 bg-white rounded-lg shadow">
+    <div className="bg-[#E7E1BC]  min-h-screen flex items-center justify-center">
+      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
         <div className="flex justify-center">
           <img src="/CasaSarda.png" alt="Logo" className="w-[15rem]" />
         </div>
@@ -39,7 +38,7 @@ export const LoginView = () => {
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="sarda@gmail.com"
+                      placeholder="casasarda@admin.com"
                       {...field}
                     />
                   </FormControl>

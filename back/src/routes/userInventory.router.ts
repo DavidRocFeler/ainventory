@@ -1,25 +1,27 @@
 import { Router } from "express";
 import {
-  // getInventoryController,
-  // getInventoryByCategoryController,
-  updateItemController,
-  // getInventoryItemDetailsController 
+  getUserInventory,
+  getUserInventoryByCategory,
+  updateUserInventory,
+  initializeUserInventory
 } from "../controllers/userInventory.controller";
 import checkLogin from "../middlewares/checkLogin.middleware";
 
 const router = Router();
+
+// Todas las rutas requieren autenticación
 router.use(checkLogin);
 
-// Obtener todo el inventario del usuario logueado
-// router.get("/", getInventoryController);
+// Obtener todo el inventario del usuario
+router.get("/", getUserInventory);
 
-// Obtener ítems por categoría (ej: /category/wine)
-// router.get("/category/:category", getInventoryByCategoryController);
+// Obtener inventario por categoría
+router.get("/category/:category", getUserInventoryByCategory);
 
-// Detalles de un ítem específico (nuevo endpoint)
-// router.get("/item/:itemId", getInventoryItemDetailsController);
+// Actualizar inventario de un producto
+router.patch("/product/:productId", updateUserInventory);
 
-// Actualizar un ítem (ej: stock)
-router.patch("/product/:productId", updateItemController);
+// Inicializar inventario del usuario (crear todos los productos en 0)
+router.post("/initialize", initializeUserInventory);
 
 export default router;
