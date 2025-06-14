@@ -16,11 +16,10 @@ export const AppDataSource = new DataSource({
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
-  synchronize: false,
-  dropSchema: false,
+  synchronize: true,
+  dropSchema: true,
   logging: false,
   entities: [User, Credential, Product, UserInventory, InventoryHistory],
   subscribers: [],
-  migrations: ["dist/migrations/*.js"],
-  migrationsRun: true, 
+  migrations: []
 });
