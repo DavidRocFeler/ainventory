@@ -6,6 +6,7 @@ import "reflect-metadata";
 import { AppDataSource } from "./config/dataSource";
 import { preLoadUsers } from "./helpers/preLoadUsers";
 import { preLoadProducts } from "./helpers/preLoadProducts";
+import { preLoadInventories } from "./helpers/preLoadInventory";
 
 const initialize = async () => {
     try {
@@ -15,11 +16,13 @@ const initialize = async () => {
         await AppDataSource.initialize();
         console.log("✅ Database initialized");
 
+        await preLoadProducts();
+        console.log("✅ Products preloaded");
+
         await preLoadUsers();
         console.log("✅ Users preloaded");
 
-        await preLoadProducts();
-        console.log("✅ Products preloaded");
+        await preLoadInventories();
 
         // ✅ Usar process.env.PORT directamente
         const SERVER_PORT = process.env.PORT || 3000;

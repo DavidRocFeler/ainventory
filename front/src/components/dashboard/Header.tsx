@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { LogoutButton } from '../LoggoutButton';
 import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
@@ -12,6 +11,10 @@ export const Header: React.FC<HeaderProps> = ({ onAddProduct }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  const handleRedirectToLink = () => {
+    window.location.href = 'https://www.casasarda.nl'
+  }
 
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
@@ -36,7 +39,9 @@ export const Header: React.FC<HeaderProps> = ({ onAddProduct }) => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-200">
       <div className="container mx-auto px-4 py-4 flex items-center">
         <div>
-          <img src="/CasaSarda.png" alt="Logo" className='w-[12rem]'/>
+          <img src="/CasaSarda.png" alt="Logo" className='w-[12rem]'
+          onClick={handleRedirectToLink}
+          />
           <div className="relative inline-block" ref={dropdownRef}>
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}

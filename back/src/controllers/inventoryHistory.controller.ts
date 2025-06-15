@@ -1,57 +1,67 @@
-import { Response } from "express";
-import { catchedController } from "../utils/catchedController";
-import {
-  getInventoryHistoryByDateService,
-  getInventoryHistoryLast30DaysService,
-  createDailySnapshotService
+import { Request, Response } from "express";
+import { 
+    getItemHistoryService,
+    createSnapshotService, 
+    getFullUserHistoryService
 } from "../services/inventoryHistory.service";
+import { DateSchema, ItemHistorySchema } from "../schemas/history.schema"; // Validaciones con Zod
 
-// Obtener historial de una fecha específica
-export const getInventoryHistoryByDate = catchedController(
-  async (req: any, res: Response) => {
-    const userId = req.user?.userId;  // ✅ CAMBIO: userId en lugar de id
-    const { date } = req.query;
-
-    if (!userId) {
-      return res.status(401).json({ error: "Usuario no autenticado" });
+// Historial de inventario por rango de fechas
+export const getFullUserHistoryController = async (req: Request, res: Response) => {
+    try {
+      const { date } = DateSchema.parse(req.query);
+      const userId = (req as any).user.userId;
+      const targetDate = new Date(date);
+      const fullHistory = await getFullUserHistoryService(userId, targetDate);
+      res.json({
+        success: true,
+        data: fullHistory
+      });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Error desconocido"
+      });
     }
+  };
+  
 
-    if (!date) {
-      return res.status(400).json({ error: "Fecha requerida" });
+// Historial de un ítem específico
+export const getItemHistoryController = async (req: Request, res: Response) => {
+    try {
+        const { itemId } = ItemHistorySchema.parse(req.params);
+
+        const userId = (req as any).user
+        
+        const history = await getItemHistoryService(userId, Number(itemId));
+        
+        res.json({
+            success: true,
+            data: history
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error instanceof Error ? error.message : "Error al obtener historial"
+        });
     }
+};
 
-    const dateObj = new Date(date as string);
-    dateObj.setHours(0, 0, 0, 0);
+// Crear snapshot manual
+export const createSnapshotController = async (req: Request, res: Response) => {
+    try {
 
-    const history = await getInventoryHistoryByDateService(userId, dateObj);
-    res.json(history);
-  }
-);
-
-// Obtener historial de los últimos 30 días
-export const getInventoryHistoryLast30Days = catchedController(
-  async (req: any, res: Response) => {
-    const userId = req.user?.userId;  // ✅ CAMBIO: userId en lugar de id
-
-    if (!userId) {
-      return res.status(401).json({ error: "Usuario no autenticado" });
+        const userId = (req as any).user
+        await createSnapshotService(userId);
+        
+        res.json({
+            success: true,
+            message: "Snapshot creado exitosamente"
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error al crear snapshot"
+        });
     }
-
-    const history = await getInventoryHistoryLast30DaysService(userId);
-    res.json(history);
-  }
-);
-
-// Crear snapshot manual del día actual (opcional, principalmente para testing)
-export const createDailySnapshot = catchedController(
-  async (req: any, res: Response) => {
-    const userId = req.user?.userId;  // ✅ CAMBIO: userId en lugar de id
-
-    if (!userId) {
-      return res.status(401).json({ error: "Usuario no autenticado" });
-    }
-
-    await createDailySnapshotService(userId);
-    res.json({ message: "Snapshot del día creado correctamente" });
-  }
-);
+};

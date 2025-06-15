@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import emailjs from 'emailjs-com';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -62,6 +63,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md bg-white">
+        <DialogTitle className='sr-only'> Add FeedBack </DialogTitle>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Add Feedback</h2>
           <Button variant="ghost" size="sm" onClick={onClose}>
